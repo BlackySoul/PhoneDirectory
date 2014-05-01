@@ -37,11 +37,11 @@ namespace MCWinApp6 {
 		}
 		private:MyForm^ form2;
 
-	private: System::Windows::Forms::DataGridView^  dataGridView1;
+
 	protected: 
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column2;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column3;
+
+
+
 
 	private: System::Windows::Forms::TextBox^  textBox1;
 
@@ -75,6 +75,12 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::ToolStripMenuItem^  îïğîãğàììåToolStripMenuItem;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::DataGridView^  dataGridView1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column3;
+
+
 
 
 
@@ -108,10 +114,6 @@ namespace MCWinApp6 {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Form1::typeid));
-			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
-			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
@@ -130,43 +132,14 @@ namespace MCWinApp6 {
 			this->ïàğàìåòğûToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->ñïğàâêàToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->îïğîãğàììåToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->BeginInit();
+			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
+			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->panel1->SuspendLayout();
 			this->menuStrip1->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
-			// 
-			// dataGridView1
-			// 
-			this->dataGridView1->AllowUserToAddRows = false;
-			this->dataGridView1->AllowUserToDeleteRows = false;
-			this->dataGridView1->BackgroundColor = System::Drawing::SystemColors::ActiveCaption;
-			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {this->Column1, 
-				this->Column2, this->Column3});
-			this->dataGridView1->Location = System::Drawing::Point(14, 17);
-			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->ReadOnly = true;
-			this->dataGridView1->Size = System::Drawing::Size(360, 494);
-			this->dataGridView1->TabIndex = 0;
-			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &Form1::dataGridView1_CellContentClick);
-			// 
-			// Column1
-			// 
-			this->Column1->HeaderText = L"Ôàìèëèÿ";
-			this->Column1->Name = L"Column1";
-			this->Column1->ReadOnly = true;
-			// 
-			// Column2
-			// 
-			this->Column2->HeaderText = L"Èìÿ";
-			this->Column2->Name = L"Column2";
-			this->Column2->ReadOnly = true;
-			// 
-			// Column3
-			// 
-			this->Column3->HeaderText = L"Îò÷åñòâî";
-			this->Column3->Name = L"Column3";
-			this->Column3->ReadOnly = true;
 			// 
 			// textBox1
 			// 
@@ -176,12 +149,11 @@ namespace MCWinApp6 {
 			this->textBox1->Font = (gcnew System::Drawing::Font(L"Candara", 10.5F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(204)));
 			this->textBox1->ForeColor = System::Drawing::SystemColors::Control;
-			this->textBox1->HideSelection = false;
 			this->textBox1->ImeMode = System::Windows::Forms::ImeMode::NoControl;
 			this->textBox1->Location = System::Drawing::Point(430, 79);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(165, 18);
-			this->textBox1->TabIndex = 0;
+			this->textBox1->TabIndex = 7;
 			this->textBox1->Text = L"Ââåäèòå êëş÷åâîå ñëîâî";
 			this->textBox1->TextChanged += gcnew System::EventHandler(this, &Form1::textBox1_TextChanged);
 			// 
@@ -205,10 +177,10 @@ namespace MCWinApp6 {
 			this->panel1->BackColor = System::Drawing::Color::Lavender;
 			this->panel1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"panel1.BackgroundImage")));
 			this->panel1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Zoom;
+			this->panel1->Controls->Add(this->dataGridView1);
 			this->panel1->Controls->Add(this->button2);
 			this->panel1->Controls->Add(this->textBox1);
 			this->panel1->Controls->Add(this->button1);
-			this->panel1->Controls->Add(this->dataGridView1);
 			this->panel1->Controls->Add(this->comboBox1);
 			this->panel1->Location = System::Drawing::Point(12, 27);
 			this->panel1->Name = L"panel1";
@@ -250,7 +222,7 @@ namespace MCWinApp6 {
 			this->button1->Location = System::Drawing::Point(461, 263);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(153, 58);
-			this->button1->TabIndex = 3;
+			this->button1->TabIndex = 0;
 			this->button1->Text = L"Äîáàâèòü íîâûé êîíòàêò";
 			this->button1->UseVisualStyleBackColor = false;
 			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
@@ -346,7 +318,9 @@ namespace MCWinApp6 {
 			// 
 			// ñïğàâêàToolStripMenuItem
 			// 
+			this->ñïğàâêàToolStripMenuItem->BackColor = System::Drawing::Color::Transparent;
 			this->ñïğàâêàToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->îïğîãğàììåToolStripMenuItem});
+			this->ñïğàâêàToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Transparent;
 			this->ñïğàâêàToolStripMenuItem->Name = L"ñïğàâêàToolStripMenuItem";
 			this->ñïğàâêàToolStripMenuItem->Size = System::Drawing::Size(65, 20);
 			this->ñïğàâêàToolStripMenuItem->Text = L"Ñïğà&âêà";
@@ -358,6 +332,39 @@ namespace MCWinApp6 {
 			this->îïğîãğàììåToolStripMenuItem->Text = L"&Î ïğîãğàììå...";
 			this->îïğîãğàììåToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::îïğîãğàììåToolStripMenuItem_Click);
 			// 
+			// dataGridView1
+			// 
+			this->dataGridView1->AllowUserToAddRows = false;
+			this->dataGridView1->AllowUserToDeleteRows = false;
+			this->dataGridView1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView1->ColumnHeadersVisible = false;
+			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {this->Column1, 
+				this->Column2, this->Column3});
+			this->dataGridView1->Location = System::Drawing::Point(15, 16);
+			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->ReadOnly = true;
+			this->dataGridView1->Size = System::Drawing::Size(354, 498);
+			this->dataGridView1->TabIndex = 5;
+			// 
+			// Column1
+			// 
+			this->Column1->HeaderText = L"Column1";
+			this->Column1->Name = L"Column1";
+			this->Column1->ReadOnly = true;
+			// 
+			// Column2
+			// 
+			this->Column2->HeaderText = L"Column2";
+			this->Column2->Name = L"Column2";
+			this->Column2->ReadOnly = true;
+			// 
+			// Column3
+			// 
+			this->Column3->HeaderText = L"Column3";
+			this->Column3->Name = L"Column3";
+			this->Column3->ReadOnly = true;
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -368,14 +375,16 @@ namespace MCWinApp6 {
 			this->Controls->Add(this->panel1);
 			this->Controls->Add(this->menuStrip1);
 			this->DoubleBuffered = true;
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 			this->MainMenuStrip = this->menuStrip1;
+			this->MaximizeBox = false;
 			this->Name = L"Form1";
-			this->Text = L"Form1";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->EndInit();
+			this->Text = L"Òåëåôîííàÿ êíèãà";
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
