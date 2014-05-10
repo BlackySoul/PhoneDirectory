@@ -48,17 +48,6 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::ComboBox^  comboBox1;
 	private: System::Windows::Forms::Panel^  panel1;
 	private: System::Windows::Forms::MenuStrip^  menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^  ôàéëToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  ñîçäàòüToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  îòêğûòüToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator;
-	private: System::Windows::Forms::ToolStripMenuItem^  ñîõğàíèòüToolStripMenuItem;
-
-	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
-
-
-
-	private: System::Windows::Forms::ToolStripMenuItem^  âûõîäToolStripMenuItem;
 
 
 
@@ -68,17 +57,29 @@ namespace MCWinApp6 {
 
 
 
-	private: System::Windows::Forms::ToolStripMenuItem^  ñåğâèñToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  íàñòğîéêèToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  ïàğàìåòğûToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  ñïğàâêàToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  îïğîãğàììåToolStripMenuItem;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column2;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column3;
+	private: System::Windows::Forms::Button^  button3;
 
 
 
@@ -117,27 +118,15 @@ namespace MCWinApp6 {
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
-			this->ôàéëToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->ñîçäàòüToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->îòêğûòüToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->toolStripSeparator = (gcnew System::Windows::Forms::ToolStripSeparator());
-			this->ñîõğàíèòüToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
-			this->âûõîäToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->ñåğâèñToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->íàñòğîéêèToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->ïàğàìåòğûToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->ñïğàâêàToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->îïğîãğàììåToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
 			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->panel1->SuspendLayout();
-			this->menuStrip1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -156,6 +145,8 @@ namespace MCWinApp6 {
 			this->textBox1->TabIndex = 7;
 			this->textBox1->Text = L"Ââåäèòå êëş÷åâîå ñëîâî";
 			this->textBox1->TextChanged += gcnew System::EventHandler(this, &Form1::textBox1_TextChanged);
+			this->textBox1->Enter += gcnew System::EventHandler(this, &Form1::textBox1_Enter);
+			this->textBox1->Leave += gcnew System::EventHandler(this, &Form1::textBox1_Leave);
 			// 
 			// comboBox1
 			// 
@@ -164,7 +155,6 @@ namespace MCWinApp6 {
 			this->comboBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(204)));
 			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"Ñåìüÿ", L"Äğóçüÿ", L"Êîëëåãè"});
 			this->comboBox1->Location = System::Drawing::Point(446, 172);
 			this->comboBox1->Margin = System::Windows::Forms::Padding(0);
 			this->comboBox1->Name = L"comboBox1";
@@ -177,6 +167,7 @@ namespace MCWinApp6 {
 			this->panel1->BackColor = System::Drawing::Color::Lavender;
 			this->panel1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"panel1.BackgroundImage")));
 			this->panel1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Zoom;
+			this->panel1->Controls->Add(this->button3);
 			this->panel1->Controls->Add(this->dataGridView1);
 			this->panel1->Controls->Add(this->button2);
 			this->panel1->Controls->Add(this->textBox1);
@@ -186,6 +177,56 @@ namespace MCWinApp6 {
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(640, 530);
 			this->panel1->TabIndex = 3;
+			// 
+			// button3
+			// 
+			this->button3->BackColor = System::Drawing::Color::Transparent;
+			this->button3->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"button3.BackgroundImage")));
+			this->button3->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Zoom;
+			this->button3->FlatAppearance->BorderSize = 0;
+			this->button3->FlatAppearance->MouseDownBackColor = System::Drawing::Color::Transparent;
+			this->button3->FlatAppearance->MouseOverBackColor = System::Drawing::Color::Transparent;
+			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button3->ForeColor = System::Drawing::Color::Transparent;
+			this->button3->Location = System::Drawing::Point(610, 3);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(27, 25);
+			this->button3->TabIndex = 8;
+			this->button3->UseVisualStyleBackColor = false;
+			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
+			// 
+			// dataGridView1
+			// 
+			this->dataGridView1->AllowUserToAddRows = false;
+			this->dataGridView1->AllowUserToDeleteRows = false;
+			this->dataGridView1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView1->ColumnHeadersVisible = false;
+			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {this->Column1, 
+				this->Column2, this->Column3});
+			this->dataGridView1->Location = System::Drawing::Point(15, 16);
+			this->dataGridView1->Name = L"dataGridView1";
+			this->dataGridView1->ReadOnly = true;
+			this->dataGridView1->Size = System::Drawing::Size(354, 498);
+			this->dataGridView1->TabIndex = 5;
+			// 
+			// Column1
+			// 
+			this->Column1->HeaderText = L"Column1";
+			this->Column1->Name = L"Column1";
+			this->Column1->ReadOnly = true;
+			// 
+			// Column2
+			// 
+			this->Column2->HeaderText = L"Column2";
+			this->Column2->Name = L"Column2";
+			this->Column2->ReadOnly = true;
+			// 
+			// Column3
+			// 
+			this->Column3->HeaderText = L"Column3";
+			this->Column3->Name = L"Column3";
+			this->Column3->ReadOnly = true;
 			// 
 			// button2
 			// 
@@ -232,8 +273,6 @@ namespace MCWinApp6 {
 			this->menuStrip1->BackColor = System::Drawing::Color::LightSteelBlue;
 			this->menuStrip1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"menuStrip1.BackgroundImage")));
 			this->menuStrip1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {this->ôàéëToolStripMenuItem, 
-				this->ñåğâèñToolStripMenuItem, this->ñïğàâêàToolStripMenuItem});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Margin = System::Windows::Forms::Padding(10, 0, 0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -242,128 +281,6 @@ namespace MCWinApp6 {
 			this->menuStrip1->Size = System::Drawing::Size(664, 24);
 			this->menuStrip1->TabIndex = 4;
 			this->menuStrip1->Text = L"menuStrip1";
-			// 
-			// ôàéëToolStripMenuItem
-			// 
-			this->ôàéëToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->ñîçäàòüToolStripMenuItem, 
-				this->îòêğûòüToolStripMenuItem, this->toolStripSeparator, this->ñîõğàíèòüToolStripMenuItem, this->toolStripSeparator1, this->âûõîäToolStripMenuItem});
-			this->ôàéëToolStripMenuItem->Name = L"ôàéëToolStripMenuItem";
-			this->ôàéëToolStripMenuItem->Size = System::Drawing::Size(48, 20);
-			this->ôàéëToolStripMenuItem->Text = L"&Ôàéë";
-			// 
-			// ñîçäàòüToolStripMenuItem
-			// 
-			this->ñîçäàòüToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"ñîçäàòüToolStripMenuItem.Image")));
-			this->ñîçäàòüToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->ñîçäàòüToolStripMenuItem->Name = L"ñîçäàòüToolStripMenuItem";
-			this->ñîçäàòüToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-			this->ñîçäàòüToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->ñîçäàòüToolStripMenuItem->Text = L"&Ñîçäàòü";
-			// 
-			// îòêğûòüToolStripMenuItem
-			// 
-			this->îòêğûòüToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"îòêğûòüToolStripMenuItem.Image")));
-			this->îòêğûòüToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->îòêğûòüToolStripMenuItem->Name = L"îòêğûòüToolStripMenuItem";
-			this->îòêğûòüToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
-			this->îòêğûòüToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->îòêğûòüToolStripMenuItem->Text = L"&Îòêğûòü";
-			// 
-			// toolStripSeparator
-			// 
-			this->toolStripSeparator->Name = L"toolStripSeparator";
-			this->toolStripSeparator->Size = System::Drawing::Size(169, 6);
-			// 
-			// ñîõğàíèòüToolStripMenuItem
-			// 
-			this->ñîõğàíèòüToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"ñîõğàíèòüToolStripMenuItem.Image")));
-			this->ñîõğàíèòüToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->ñîõğàíèòüToolStripMenuItem->Name = L"ñîõğàíèòüToolStripMenuItem";
-			this->ñîõğàíèòüToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::S));
-			this->ñîõğàíèòüToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->ñîõğàíèòüToolStripMenuItem->Text = L"&Ñîõğàíèòü";
-			// 
-			// toolStripSeparator1
-			// 
-			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(169, 6);
-			// 
-			// âûõîäToolStripMenuItem
-			// 
-			this->âûõîäToolStripMenuItem->Name = L"âûõîäToolStripMenuItem";
-			this->âûõîäToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Alt | System::Windows::Forms::Keys::X));
-			this->âûõîäToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->âûõîäToolStripMenuItem->Text = L"Âû&õîä";
-			this->âûõîäToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::âûõîäToolStripMenuItem_Click);
-			// 
-			// ñåğâèñToolStripMenuItem
-			// 
-			this->ñåğâèñToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->íàñòğîéêèToolStripMenuItem, 
-				this->ïàğàìåòğûToolStripMenuItem});
-			this->ñåğâèñToolStripMenuItem->Name = L"ñåğâèñToolStripMenuItem";
-			this->ñåğâèñToolStripMenuItem->Size = System::Drawing::Size(59, 20);
-			this->ñåğâèñToolStripMenuItem->Text = L"&Ñåğâèñ";
-			// 
-			// íàñòğîéêèToolStripMenuItem
-			// 
-			this->íàñòğîéêèToolStripMenuItem->Name = L"íàñòğîéêèToolStripMenuItem";
-			this->íàñòğîéêèToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->íàñòğîéêèToolStripMenuItem->Text = L"&Íàñòğîéêè";
-			// 
-			// ïàğàìåòğûToolStripMenuItem
-			// 
-			this->ïàğàìåòğûToolStripMenuItem->Name = L"ïàğàìåòğûToolStripMenuItem";
-			this->ïàğàìåòğûToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->ïàğàìåòğûToolStripMenuItem->Text = L"&Ïàğàìåòğû";
-			// 
-			// ñïğàâêàToolStripMenuItem
-			// 
-			this->ñïğàâêàToolStripMenuItem->BackColor = System::Drawing::Color::Transparent;
-			this->ñïğàâêàToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->îïğîãğàììåToolStripMenuItem});
-			this->ñïğàâêàToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Transparent;
-			this->ñïğàâêàToolStripMenuItem->Name = L"ñïğàâêàToolStripMenuItem";
-			this->ñïğàâêàToolStripMenuItem->Size = System::Drawing::Size(65, 20);
-			this->ñïğàâêàToolStripMenuItem->Text = L"Ñïğà&âêà";
-			// 
-			// îïğîãğàììåToolStripMenuItem
-			// 
-			this->îïğîãğàììåToolStripMenuItem->Name = L"îïğîãğàììåToolStripMenuItem";
-			this->îïğîãğàììåToolStripMenuItem->Size = System::Drawing::Size(158, 22);
-			this->îïğîãğàììåToolStripMenuItem->Text = L"&Î ïğîãğàììå...";
-			this->îïğîãğàììåToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::îïğîãğàììåToolStripMenuItem_Click);
-			// 
-			// dataGridView1
-			// 
-			this->dataGridView1->AllowUserToAddRows = false;
-			this->dataGridView1->AllowUserToDeleteRows = false;
-			this->dataGridView1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView1->ColumnHeadersVisible = false;
-			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {this->Column1, 
-				this->Column2, this->Column3});
-			this->dataGridView1->Location = System::Drawing::Point(15, 16);
-			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->ReadOnly = true;
-			this->dataGridView1->Size = System::Drawing::Size(354, 498);
-			this->dataGridView1->TabIndex = 5;
-			// 
-			// Column1
-			// 
-			this->Column1->HeaderText = L"Column1";
-			this->Column1->Name = L"Column1";
-			this->Column1->ReadOnly = true;
-			// 
-			// Column2
-			// 
-			this->Column2->HeaderText = L"Column2";
-			this->Column2->Name = L"Column2";
-			this->Column2->ReadOnly = true;
-			// 
-			// Column3
-			// 
-			this->Column3->HeaderText = L"Column3";
-			this->Column3->Name = L"Column3";
-			this->Column3->ReadOnly = true;
 			// 
 			// Form1
 			// 
@@ -375,15 +292,13 @@ namespace MCWinApp6 {
 			this->Controls->Add(this->panel1);
 			this->Controls->Add(this->menuStrip1);
 			this->DoubleBuffered = true;
-			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 			this->MainMenuStrip = this->menuStrip1;
 			this->MaximizeBox = false;
 			this->Name = L"Form1";
 			this->Text = L"Òåëåôîííàÿ êíèãà";
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
-			this->menuStrip1->ResumeLayout(false);
-			this->menuStrip1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
@@ -419,6 +334,17 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
                                               //Form2() - êîíñòğóêòîğ
 				 form2->Show();
 
+		 }
+private: System::Void textBox1_Enter(System::Object^  sender, System::EventArgs^  e) {
+			 if(textBox1->Text=="Ââåäèòå êëş÷åâîå ñëîâî")
+				 textBox1->Text="";
+		 }
+private: System::Void textBox1_Leave(System::Object^  sender, System::EventArgs^  e) {
+			 if(textBox1->Text=="")
+				 textBox1->Text="Ââåäèòå êëş÷åâîå ñëîâî";
+		 }
+private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
+			 exit(0);
 		 }
 };
 }
