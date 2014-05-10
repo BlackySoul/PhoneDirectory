@@ -2,7 +2,6 @@
 #include "MyForm.h"
 
 namespace MCWinApp6 {
-
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -19,59 +18,22 @@ namespace MCWinApp6 {
 		Form1(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
+			this->dbname=gcnew String("");
+			this->selectedIndex=-1;
 		}
-
 	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
 		~Form1()
 		{
 			if (components)
 			{
 				delete components;
 			}
+			delete dbname;
 		}
-		private:MyForm^ form2;
-
-
-	protected: 
-
-
-
-
+	private:MyForm^ form2;
 	private: System::Windows::Forms::TextBox^  textBox1;
-
 	private: System::Windows::Forms::ComboBox^  comboBox1;
 	private: System::Windows::Forms::Panel^  panel1;
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
@@ -80,32 +42,12 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column2;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column3;
 	private: System::Windows::Forms::Button^  button3;
-
-
-
-
-
-
-
-
-
-
-	private: 
-
-
-
-
-
-	protected: 
-
-
-
-
-	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
+	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+			 System::ComponentModel::Container ^components;
+	public: String^ dbname;
+	private: System::Windows::Forms::MenuStrip^  menuStrip1;
+	public: 
+	private: long int selectedIndex;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -125,6 +67,7 @@ namespace MCWinApp6 {
 			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->panel1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->BeginInit();
@@ -268,6 +211,14 @@ namespace MCWinApp6 {
 			this->button1->UseVisualStyleBackColor = false;
 			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 			// 
+			// openFileDialog1
+			// 
+			this->openFileDialog1->Filter = L"Файл базы данных MicrosoftAccess 2007-2014(*.accdb)|*.accdb";
+			this->openFileDialog1->RestoreDirectory = true;
+			this->openFileDialog1->SupportMultiDottedExtensions = true;
+			this->openFileDialog1->Title = L"Выберите БД";
+			this->openFileDialog1->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openFileDialog1_FileOk);
+			// 
 			// menuStrip1
 			// 
 			this->menuStrip1->BackColor = System::Drawing::Color::LightSteelBlue;
@@ -297,6 +248,7 @@ namespace MCWinApp6 {
 			this->MaximizeBox = false;
 			this->Name = L"Form1";
 			this->Text = L"Телефонная книга";
+			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->EndInit();
@@ -306,17 +258,16 @@ namespace MCWinApp6 {
 		}
 #pragma endregion
 	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-				 
-				 /*if (textBox1->Text == "Введите ключевое слово")
+				 /*
+				 if (textBox1->Text == "Введите ключевое слово")
 					{
 						pictureBox1->Visible=true;
-						//textBox1->CursorChanged
 					 }
 				 else
 				 {
 					 pictureBox1->Visible=false;
-				 }*/
-
+				 }
+				 */
 		
 			 }
 private: System::Void опрограммеToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -345,6 +296,17 @@ private: System::Void textBox1_Leave(System::Object^  sender, System::EventArgs^
 		 }
 private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
 			 exit(0);
+		 }
+private: System::Void openFileDialog1_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) {
+			 this->dbname=openFileDialog1->FileName;
+		 }
+private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
+			 openFileDialog1->ShowDialog();
+			 if(this->dbname==""){
+				 MessageBox::Show("Вы не выбрали базу данных!\n В целях повышения безопастности программа завершает работу",
+								  "Информация");
+				 exit(1);
+			 }
 		 }
 };
 }
