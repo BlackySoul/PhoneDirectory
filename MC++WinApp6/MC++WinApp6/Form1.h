@@ -21,15 +21,7 @@ namespace MCWinApp6 {
 			this->dbname=gcnew String("");
 			this->selectedIndex=-1;
 		}
-	protected:
-		~Form1()
-		{
-			if (components)
-			{
-				delete components;
-			}
-			delete dbname;
-		}
+	
 	private:MyForm^ form2;
 	private: System::Windows::Forms::TextBox^  textBox1;
 	private: System::Windows::Forms::ComboBox^  comboBox1;
@@ -44,16 +36,27 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::Button^  button3;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 			 System::ComponentModel::Container ^components;
-	public: String^ dbname;
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
-	public: 
-	private: long int selectedIndex;
+	private: String^ dbname;
+			 System::Windows::Forms::MenuStrip^  menuStrip1;
+			 Odbc::OdbcConnection^ dbConn;
+			 Odbc::OdbcCommand^ appDBCommand;
+			 Odbc::OdbcConnectionStringBuilder^ ConnString;
+			 long int selectedIndex;
+
+	protected:
+		~Form1()
+		{
+			if (components)
+			{
+				delete components;
+			}
+			delete dbname;
+			delete dbConn;
+			delete appDBCommand;
+			delete ConnString;
+		}
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Form1::typeid));
@@ -258,16 +261,6 @@ namespace MCWinApp6 {
 		}
 #pragma endregion
 	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-				 /*
-				 if (textBox1->Text == "Введите ключевое слово")
-					{
-						pictureBox1->Visible=true;
-					 }
-				 else
-				 {
-					 pictureBox1->Visible=false;
-				 }
-				 */
 		
 			 }
 private: System::Void опрограммеToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -281,10 +274,8 @@ private: System::Void выходToolStripMenuItem_Click(System::Object^  sender, Syst
 private: System::Void dataGridView1_CellContentClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
 		 }
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-			 form2=gcnew MyForm();  // gcnew – выделение памяти, 
-                                              //Form2() - конструктор
-				 form2->Show();
-
+			 form2=gcnew MyForm();                   
+			 form2->Show();
 		 }
 private: System::Void textBox1_Enter(System::Object^  sender, System::EventArgs^  e) {
 			 if(textBox1->Text=="Введите ключевое слово")
@@ -306,6 +297,27 @@ private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e)
 				 MessageBox::Show("Вы не выбрали базу данных!\n В целях повышения безопастности программа завершает работу",
 								  "Информация");
 				 exit(1);
+			 }
+			 ConnString = gcnew Odbc::OdbcConnectionStringBuilder();
+			 ConnString->Driver = "Microsoft Access Driver (*.mdb, *.accdb)";
+			 ConnString->Add("Dbq",this->dbname);
+			 this->dbConn = gcnew Odbc::OdbcConnection();
+			 dbConn->ConnectionString=ConnString->ConnectionString;
+			 //dbConn->ConnectionString= ("Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=C:\\Spravochnik.accdb");
+			 try
+			 {
+				 dbConn->Open();
+			 }
+			 catch(...)
+			 {
+				 MessageBox::Show("Неверная строка соединения!\n" + 
+								  Convert::ToString(dbConn->ConnectionString) +"\n",
+								  "Ошибка",MessageBoxButtons::OK);
+				 exit(1);
+			 }
+			 if (dbConn->State == Data::ConnectionState::Open)
+			 {
+				 MessageBox::Show("Строка соединения корректна !","Сообщение",MessageBoxButtons::OK);
 			 }
 		 }
 };
