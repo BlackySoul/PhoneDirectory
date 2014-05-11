@@ -19,29 +19,24 @@ namespace MCWinApp6 {
 		{
 			InitializeComponent();
 			this->dbname=gcnew String("");
-			this->selectedIndex=-1;
+			codes = (int*)calloc(0, sizeof(int));
 		}
 	
 	private:MyForm^ form2;
 	private: System::Windows::Forms::TextBox^  textBox1;
 	private: System::Windows::Forms::ComboBox^  comboBox1;
 	private: System::Windows::Forms::Panel^  panel1;
-
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
-	private: System::Windows::Forms::DataGridView^  dataGridView1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column2;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column3;
 	private: System::Windows::Forms::Button^  button3;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 			 System::ComponentModel::Container ^components;
-	private: String^ dbname;
-			 System::Windows::Forms::MenuStrip^  menuStrip1;
-			 Odbc::OdbcConnection^ dbConn;
-			 Odbc::OdbcCommand^ appDBCommand;
-			 Odbc::OdbcConnectionStringBuilder^ ConnString;
-			 long int selectedIndex;
+	private: String^ dbname; //Путь к базе данных
+			 System::Windows::Forms::MenuStrip^  menuStrip1; //Не нужно
+			 Odbc::OdbcConnection^ dbConn; //Активное соединения с БД
+			 Odbc::OdbcConnectionStringBuilder^ ConnString; //Строка формулировки соединения с БД
+			 System::Windows::Forms::ListBox^  listBox1;
+	public: int *codes; //Массив сопоставлений кодов в listBox1(ключ) и кодов в БД(значение)
 
 	protected:
 		~Form1()
@@ -51,9 +46,10 @@ namespace MCWinApp6 {
 				delete components;
 			}
 			delete dbname;
+			dbConn->Close();
 			delete dbConn;
-			delete appDBCommand;
 			delete ConnString;
+			delete[] codes;
 		}
 
 #pragma region Windows Form Designer generated code
@@ -63,17 +59,13 @@ namespace MCWinApp6 {
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->listBox1 = (gcnew System::Windows::Forms::ListBox());
 			this->button3 = (gcnew System::Windows::Forms::Button());
-			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
-			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->panel1->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -97,7 +89,7 @@ namespace MCWinApp6 {
 			// comboBox1
 			// 
 			this->comboBox1->BackColor = System::Drawing::SystemColors::HighlightText;
-			this->comboBox1->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+			this->comboBox1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->comboBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(204)));
 			this->comboBox1->FormattingEnabled = true;
@@ -107,14 +99,15 @@ namespace MCWinApp6 {
 			this->comboBox1->Size = System::Drawing::Size(155, 24);
 			this->comboBox1->TabIndex = 2;
 			this->comboBox1->Text = L"Выберите из списка";
+			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::comboBox1_SelectedIndexChanged);
 			// 
 			// panel1
 			// 
 			this->panel1->BackColor = System::Drawing::Color::Lavender;
 			this->panel1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"panel1.BackgroundImage")));
 			this->panel1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Zoom;
+			this->panel1->Controls->Add(this->listBox1);
 			this->panel1->Controls->Add(this->button3);
-			this->panel1->Controls->Add(this->dataGridView1);
 			this->panel1->Controls->Add(this->button2);
 			this->panel1->Controls->Add(this->textBox1);
 			this->panel1->Controls->Add(this->button1);
@@ -123,6 +116,22 @@ namespace MCWinApp6 {
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(640, 530);
 			this->panel1->TabIndex = 3;
+			// 
+			// listBox1
+			// 
+			this->listBox1->BackColor = System::Drawing::Color::White;
+			this->listBox1->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->listBox1->Font = (gcnew System::Drawing::Font(L"Calibri", 12.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+				static_cast<System::Byte>(204)));
+			this->listBox1->ForeColor = System::Drawing::Color::Black;
+			this->listBox1->FormattingEnabled = true;
+			this->listBox1->HorizontalScrollbar = true;
+			this->listBox1->ItemHeight = 21;
+			this->listBox1->Location = System::Drawing::Point(17, 16);
+			this->listBox1->Name = L"listBox1";
+			this->listBox1->Size = System::Drawing::Size(354, 504);
+			this->listBox1->Sorted = true;
+			this->listBox1->TabIndex = 9;
 			// 
 			// button3
 			// 
@@ -140,39 +149,6 @@ namespace MCWinApp6 {
 			this->button3->TabIndex = 8;
 			this->button3->UseVisualStyleBackColor = false;
 			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
-			// 
-			// dataGridView1
-			// 
-			this->dataGridView1->AllowUserToAddRows = false;
-			this->dataGridView1->AllowUserToDeleteRows = false;
-			this->dataGridView1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView1->ColumnHeadersVisible = false;
-			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {this->Column1, 
-				this->Column2, this->Column3});
-			this->dataGridView1->Location = System::Drawing::Point(15, 16);
-			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->ReadOnly = true;
-			this->dataGridView1->Size = System::Drawing::Size(354, 498);
-			this->dataGridView1->TabIndex = 5;
-			// 
-			// Column1
-			// 
-			this->Column1->HeaderText = L"Column1";
-			this->Column1->Name = L"Column1";
-			this->Column1->ReadOnly = true;
-			// 
-			// Column2
-			// 
-			this->Column2->HeaderText = L"Column2";
-			this->Column2->Name = L"Column2";
-			this->Column2->ReadOnly = true;
-			// 
-			// Column3
-			// 
-			this->Column3->HeaderText = L"Column3";
-			this->Column3->Name = L"Column3";
-			this->Column3->ReadOnly = true;
 			// 
 			// button2
 			// 
@@ -216,7 +192,7 @@ namespace MCWinApp6 {
 			// 
 			// openFileDialog1
 			// 
-			this->openFileDialog1->Filter = L"Файл базы данных MicrosoftAccess 2007-2014(*.accdb)|*.accdb";
+			this->openFileDialog1->Filter = L"Файл базы данных MicrosoftAccess(*.mdb)|*.mdb";
 			this->openFileDialog1->RestoreDirectory = true;
 			this->openFileDialog1->SupportMultiDottedExtensions = true;
 			this->openFileDialog1->Title = L"Выберите БД";
@@ -254,15 +230,11 @@ namespace MCWinApp6 {
 			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-		
-			 }
 private: System::Void опрограммеToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 DialogResult = MessageBox::Show(this, "Приложение made УПОРОТОСТЬ ПРОДАКШН", "Информация",
 				 MessageBoxButtons::OK,
@@ -299,11 +271,10 @@ private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e)
 				 exit(1);
 			 }
 			 ConnString = gcnew Odbc::OdbcConnectionStringBuilder();
-			 ConnString->Driver = "Microsoft Access Driver (*.mdb, *.accdb)";
+			 ConnString->Driver = "Microsoft Access Driver (*.mdb)";
 			 ConnString->Add("Dbq",this->dbname);
 			 this->dbConn = gcnew Odbc::OdbcConnection();
 			 dbConn->ConnectionString=ConnString->ConnectionString;
-			 //dbConn->ConnectionString= ("Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=C:\\Spravochnik.accdb");
 			 try
 			 {
 				 dbConn->Open();
@@ -317,9 +288,140 @@ private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e)
 			 }
 			 if (dbConn->State == Data::ConnectionState::Open)
 			 {
-				 MessageBox::Show("Строка соединения корректна !","Сообщение",MessageBoxButtons::OK);
+				 this->comboBox1->Items->Add("[Любая группа]");
+				 Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand("SELECT `Группа` FROM `Группы` ORDER BY `Код`");
+				 appDBCommand->Connection = this->dbConn;
+				 Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
+				 while(appReader->Read())
+				 {
+					 this->comboBox1->Items->Add(appReader->GetString(0));
+				 }
+				 appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+										   "FROM `Телефонна книга` ORDER BY `Фамилия`;";
+				 appReader->Close();
+				 appReader->~OdbcDataReader();
+				 delete appReader;
+				 appReader = appDBCommand->ExecuteReader();
+				 int i=0;
+				 while(appReader->Read())
+				 {
+					 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+					 this->codes[i-1]=appReader->GetInt32(0);
+					 String^ tmp = gcnew String(appReader->GetString(1));
+					 if(!appReader->IsDBNull(2)){
+						 tmp+=" " + appReader->GetString(2);
+					 }
+					 if(!appReader->IsDBNull(3)){
+						 tmp+=" " + appReader->GetString(3);
+					 }
+					 this->listBox1->Items->Add(tmp);
+					 delete tmp;
+				 }
+				 appReader->Close();
+				 appReader->~OdbcDataReader();
+				 appDBCommand->~OdbcCommand();
+				 delete appReader;
+				 delete appDBCommand;
 			 }
 		 }
+private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+			  if (dbConn->State == Data::ConnectionState::Open)
+			  {
+				  Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+				  if(comboBox1->SelectedIndex==0)
+					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+												"FROM `Телефонна книга` ORDER BY `Фамилия`;";
+				  else
+					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+												"FROM `Телефонна книга` " + 
+												"WHERE (`Группа`=" + Convert::ToString(comboBox1->SelectedIndex) +												
+												") ORDER BY `Фамилия`;";
+				  //Очистим основное поле вывода
+				  this->listBox1->Items->Clear();
+				  //Очистим коды сопоставлений
+				  int i=0;
+				  free(this->codes);
+				  this->codes = (int*)calloc(0, sizeof(int));
+				  //Выполним запрос
+				  appDBCommand->Connection = this->dbConn;
+				  Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
+				  while(appReader->Read())
+				  {
+					 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+					 this->codes[i-1]=appReader->GetInt32(0);
+					 String^ tmp = gcnew String(appReader->GetString(1));
+					 if(!appReader->IsDBNull(2)){
+						 tmp+=" " + appReader->GetString(2);
+					 }
+					 if(!appReader->IsDBNull(3)){
+						 tmp+=" " + appReader->GetString(3);
+					 }
+					 if(textBox1->Text!="" && textBox1->Text!="Введите ключевое слово"){
+						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
+						 if((ind>0 && tmp[ind-1]==' ') || (ind==0))
+							 this->listBox1->Items->Add(tmp);
+					 } else {
+						this->listBox1->Items->Add(tmp);
+					 }
+					 delete tmp;
+				  }
+				  appReader->Close();
+				  delete appReader;
+				  delete appDBCommand;
+			  }
+		 }
+private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if(textBox1->Text=="Введите ключевое слово")
+				 return;
+			 if (dbConn->State == Data::ConnectionState::Open)
+			 {
+				  Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+				  //Начнем формирование сложного запроса на выборку
+				  //Опишем поля выборки из таблицы
+				  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` FROM `Телефонна книга` ";
+				  //Опишем условие выборки по группам(если нужно)
+				  if(comboBox1->SelectedIndex>0)
+					appDBCommand->CommandText= appDBCommand->CommandText + 
+											   "WHERE (`Группа`=" + Convert::ToString(comboBox1->SelectedIndex) + ")";
+				  //Опишем порядок выборки
+				  appDBCommand->CommandText= appDBCommand->CommandText + " ORDER BY `Фамилия`;";
+				  
+				  Clipboard::SetText(Convert::ToString(appDBCommand->CommandText));
+				  //Очистим основное поле вывода
+				  this->listBox1->Items->Clear();
+				  //Очистим коды сопоставлений
+				  int i=0;
+				  free(this->codes);
+				  this->codes = (int*)calloc(0, sizeof(int));
+				  //Выполним запрос
+				  appDBCommand->Connection = this->dbConn;
+				  Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
+				  while(appReader->Read())
+				  {
+					 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+					 this->codes[i-1]=appReader->GetInt32(0);
+					 String^ tmp = gcnew String(appReader->GetString(1));
+					 if(!appReader->IsDBNull(2)){
+						 tmp+=" " + appReader->GetString(2);
+					 }
+					 if(!appReader->IsDBNull(3)){
+						 tmp+=" " + appReader->GetString(3);
+					 }
+					 if(textBox1->Text!=""){
+						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
+						 if((ind>0 && tmp[ind-1]==' ') || (ind==0))
+							 this->listBox1->Items->Add(tmp);
+					 } else {
+						this->listBox1->Items->Add(tmp);
+					 }
+					 delete tmp;
+				  }
+				  appReader->Close();
+				  delete appReader;
+				  delete appDBCommand;
+			  }
+	
+		}
 };
 }
 

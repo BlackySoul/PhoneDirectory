@@ -4,3 +4,4 @@
 #pragma once
 #include <cstdlib>
 
+#define Display(a) MessageBox::Show(System::Convert::ToString(a))
