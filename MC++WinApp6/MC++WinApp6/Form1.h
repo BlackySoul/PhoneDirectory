@@ -30,13 +30,13 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  button3;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
-			 System::ComponentModel::Container ^components;
+	private: System::ComponentModel::Container ^components;
+	private: System::Windows::Forms::ListBox^  listBox1;
+	private: System::Windows::Forms::MenuStrip^  menuStrip1; 
 	private: String^ dbname; //Путь к базе данных
-			 System::Windows::Forms::MenuStrip^  menuStrip1; //Не нужно
-			 Odbc::OdbcConnection^ dbConn; //Активное соединения с БД
-			 Odbc::OdbcConnectionStringBuilder^ ConnString; //Строка формулировки соединения с БД
-			 System::Windows::Forms::ListBox^  listBox1;
-	public: int *codes; //Массив сопоставлений кодов в listBox1(ключ) и кодов в БД(значение)
+	private: Odbc::OdbcConnectionStringBuilder^ ConnString; //Строка формулировки соединения с БД
+	private: int *codes; //Массив сопоставлений кодов в listBox1(ключ) и кодов в БД(значение)
+	public:  Odbc::OdbcConnection^ dbConn; //Активное соединения с БД
 
 	protected:
 		~Form1()
@@ -132,6 +132,7 @@ namespace MCWinApp6 {
 			this->listBox1->Size = System::Drawing::Size(354, 504);
 			this->listBox1->Sorted = true;
 			this->listBox1->TabIndex = 9;
+			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
 			// 
 			// button3
 			// 
@@ -246,7 +247,7 @@ private: System::Void выходToolStripMenuItem_Click(System::Object^  sender, Syst
 private: System::Void dataGridView1_CellContentClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
 		 }
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-			 form2=gcnew MyForm();                   
+			 form2=gcnew MyForm(this->dbConn, this->listBox1->Items->Count+1);                   
 			 form2->Show();
 		 }
 private: System::Void textBox1_Enter(System::Object^  sender, System::EventArgs^  e) {
@@ -277,7 +278,7 @@ private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e)
 			 dbConn->ConnectionString=ConnString->ConnectionString;
 			 try
 			 {
-				 dbConn->Open();
+				 this->dbConn->Open();
 			 }
 			 catch(...)
 			 {
@@ -286,7 +287,7 @@ private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e)
 								  "Ошибка",MessageBoxButtons::OK);
 				 exit(1);
 			 }
-			 if (dbConn->State == Data::ConnectionState::Open)
+			 if (this->dbConn->State == Data::ConnectionState::Open)
 			 {
 				 this->comboBox1->Items->Add("[Любая группа]");
 				 Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand("SELECT `Группа` FROM `Группы` ORDER BY `Код`");
@@ -347,8 +348,6 @@ private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, Sy
 				  Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
 				  while(appReader->Read())
 				  {
-					 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
-					 this->codes[i-1]=appReader->GetInt32(0);
 					 String^ tmp = gcnew String(appReader->GetString(1));
 					 if(!appReader->IsDBNull(2)){
 						 tmp+=" " + appReader->GetString(2);
@@ -358,10 +357,15 @@ private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, Sy
 					 }
 					 if(textBox1->Text!="" && textBox1->Text!="Введите ключевое слово"){
 						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
-						 if((ind>0 && tmp[ind-1]==' ') || (ind==0))
+						 if((ind>0 && tmp[ind-1]==' ') || (ind==0)){
 							 this->listBox1->Items->Add(tmp);
+							 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+							 this->codes[i-1]=appReader->GetInt32(0);
+						 }
 					 } else {
 						this->listBox1->Items->Add(tmp);
+						this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+						this->codes[i-1]=appReader->GetInt32(0);
 					 }
 					 delete tmp;
 				  }
@@ -398,8 +402,6 @@ private: System::Void textBox1_TextChanged(System::Object^  sender, System::Even
 				  Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
 				  while(appReader->Read())
 				  {
-					 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
-					 this->codes[i-1]=appReader->GetInt32(0);
 					 String^ tmp = gcnew String(appReader->GetString(1));
 					 if(!appReader->IsDBNull(2)){
 						 tmp+=" " + appReader->GetString(2);
@@ -409,10 +411,15 @@ private: System::Void textBox1_TextChanged(System::Object^  sender, System::Even
 					 }
 					 if(textBox1->Text!=""){
 						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
-						 if((ind>0 && tmp[ind-1]==' ') || (ind==0))
+						 if((ind>0 && tmp[ind-1]==' ') || (ind==0)){
 							 this->listBox1->Items->Add(tmp);
+							 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+							 this->codes[i-1]=appReader->GetInt32(0);
+						 }
 					 } else {
 						this->listBox1->Items->Add(tmp);
+						this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+						this->codes[i-1]=appReader->GetInt32(0);
 					 }
 					 delete tmp;
 				  }
@@ -422,6 +429,12 @@ private: System::Void textBox1_TextChanged(System::Object^  sender, System::Even
 			  }
 	
 		}
+private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if(this->listBox1->SelectedIndex==-1)
+				 return;
+			 form2=gcnew MyForm(this->codes[listBox1->SelectedIndex], this->dbConn);                   
+			 form2->Show();
+		 }
 };
 }
 
