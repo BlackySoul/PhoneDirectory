@@ -1,4 +1,7 @@
 #pragma once
+#include <cstdlib>
+
+static bool open=0;
 
 namespace MCWinApp6 {
 
@@ -13,6 +16,7 @@ namespace MCWinApp6 {
 	public:
 		MyForm(Odbc::OdbcConnection^ dbConn, int max)
 		{
+			open=true;
 			InitializeComponent();
 			this->Text = L"Добавление";
 			this->button1->Text="Добавить";
@@ -36,6 +40,7 @@ namespace MCWinApp6 {
 		}
 		MyForm(int key, Odbc::OdbcConnection^ dbConn)
 		{
+			open=true;
 			InitializeComponent();
 			this->Text = L"Просмотр/Изменение";
 			this->button1->Text="Закончить просмотр";
@@ -64,6 +69,7 @@ namespace MCWinApp6 {
 			{
 				delete components;
 			}
+			open=false;
 		}
 	
 	private: System::Windows::Forms::TextBox^  textBox1;
@@ -71,9 +77,6 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::TextBox^  textBox3;
 	private: System::Windows::Forms::RichTextBox^  richTextBox2;
 	private: System::Windows::Forms::RichTextBox^  richTextBox1;
-
-
-
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::ComboBox^  comboBox1;
 	private: System::Windows::Forms::Button^  button3;
@@ -259,7 +262,6 @@ private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e
 												"`Номера`.`Номер телефона`, `Номера`.`Email`" +
 												"FROM `Телефонна книга` LEFT JOIN `Номера` ON `Телефонна книга`.`Код`=`Номера`.`Код`" +
 												"WHERE `Телефонна книга`.`Код`="+store+";";
-					 Clipboard::SetText(appDBCommand->CommandText);
 					 try{
 						appReader = appDBCommand->ExecuteReader();
 					 } catch(...) {
@@ -277,7 +279,7 @@ private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e
 							 this->textBox3->Text = appReader->GetString(2);
 						 }
 						 if(!appReader->IsDBNull(3)){
-							 this->comboBox1->SelectedIndex = appReader->GetInt32(3)-1;
+							 this->comboBox1->SelectedIndex = appReader->GetInt32(3)<=0?0:appReader->GetInt32(3);
 						 }
 						 if(!appReader->IsDBNull(4)){
 							 this->richTextBox1->Text = appReader->GetString(4);
@@ -373,7 +375,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 				 this->editSomething = false;
 				 button1->Text = "Закончить";
 				 this->lookOrCreate=this->maxIndex;
-			 }
+				 }
 		 }
 };
 }

@@ -3,5 +3,8 @@
 // are changed infrequently
 #pragma once
 #include <cstdlib>
+#include <Windows.h>
 
 #define Display(a) MessageBox::Show(System::Convert::ToString(a))
+
+#define PAUSE 100

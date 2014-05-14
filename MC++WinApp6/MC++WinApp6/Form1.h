@@ -1,14 +1,23 @@
 #pragma once
 #include "MyForm.h"
 
-namespace MCWinApp6 {
-	using namespace System;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
-	using namespace System::Data;
-	using namespace System::Drawing;
+using namespace System;
+using namespace System::ComponentModel;
+using namespace System::Collections;
+using namespace System::Windows::Forms;
+using namespace System::Data;
+using namespace System::Drawing;
 
+static DWORD WINAPI  ThreadFunction(LPVOID ptr) 
+{
+	while(open){
+		Sleep(PAUSE);
+	}
+	ExitThread(0);
+	return 0;
+}
+
+namespace MCWinApp6 {
 	/// <summary>
 	/// Summary for Form1
 	/// </summary>
@@ -17,6 +26,7 @@ namespace MCWinApp6 {
 	public:
 		Form1(void)
 		{
+			oldSelection=-1;
 			InitializeComponent();
 			this->dbname=gcnew String("");
 			codes = (int*)calloc(0, sizeof(int));
@@ -30,13 +40,19 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Button^  button3;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
-	private: System::ComponentModel::Container ^components;
+	private: System::ComponentModel::IContainer^  components;
+
 	private: System::Windows::Forms::ListBox^  listBox1;
 	private: System::Windows::Forms::MenuStrip^  menuStrip1; 
 	private: String^ dbname; //Путь к базе данных
 	private: Odbc::OdbcConnectionStringBuilder^ ConnString; //Строка формулировки соединения с БД
 	private: int *codes; //Массив сопоставлений кодов в listBox1(ключ) и кодов в БД(значение)
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+	private: System::Windows::Forms::ContextMenuStrip^  contextMenuStrip1;
+	private: System::Windows::Forms::ToolStripMenuItem^  просмотретьизменитьКонтактToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  удалитьКонтактToolStripMenuItem;
 	public:  Odbc::OdbcConnection^ dbConn; //Активное соединения с БД
+	private: int oldSelection;
 
 	protected:
 		~Form1()
@@ -55,6 +71,7 @@ namespace MCWinApp6 {
 #pragma region Windows Form Designer generated code
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Form1::typeid));
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
@@ -65,7 +82,12 @@ namespace MCWinApp6 {
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
+			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->просмотретьизменитьКонтактToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->удалитьКонтактToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->panel1->SuspendLayout();
+			this->contextMenuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -133,6 +155,7 @@ namespace MCWinApp6 {
 			this->listBox1->Sorted = true;
 			this->listBox1->TabIndex = 9;
 			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
+			this->listBox1->DoubleClick += gcnew System::EventHandler(this, &Form1::listBox1_DoubleClick);
 			// 
 			// button3
 			// 
@@ -213,6 +236,32 @@ namespace MCWinApp6 {
 			this->menuStrip1->TabIndex = 4;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
+			// backgroundWorker1
+			// 
+			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Form1::backgroundWorker1_DoWork);
+			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Form1::backgroundWorker1_RunWorkerCompleted);
+			// 
+			// contextMenuStrip1
+			// 
+			this->contextMenuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->просмотретьизменитьКонтактToolStripMenuItem, 
+				this->удалитьКонтактToolStripMenuItem});
+			this->contextMenuStrip1->Name = L"contextMenuStrip1";
+			this->contextMenuStrip1->Size = System::Drawing::Size(233, 48);
+			// 
+			// просмотретьизменитьКонтактToolStripMenuItem
+			// 
+			this->просмотретьизменитьКонтактToolStripMenuItem->Name = L"просмотретьизменитьКонтактToolStripMenuItem";
+			this->просмотретьизменитьКонтактToolStripMenuItem->Size = System::Drawing::Size(232, 22);
+			this->просмотретьизменитьКонтактToolStripMenuItem->Text = L"Просмотреть/изменить контакт";
+			this->просмотретьизменитьКонтактToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::просмотретьизменитьКонтактToolStripMenuItem_Click);
+			// 
+			// удалитьКонтактToolStripMenuItem
+			// 
+			this->удалитьКонтактToolStripMenuItem->Name = L"удалитьКонтактToolStripMenuItem";
+			this->удалитьКонтактToolStripMenuItem->Size = System::Drawing::Size(232, 22);
+			this->удалитьКонтактToolStripMenuItem->Text = L"Удалить контакт";
+			this->удалитьКонтактToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::удалитьКонтактToolStripMenuItem_Click);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -231,11 +280,67 @@ namespace MCWinApp6 {
 			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
+			this->contextMenuStrip1->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
+
+public: void reloadList(){
+			  if (this->dbConn->State == Data::ConnectionState::Open)
+			  {
+				  Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+				  if(this->comboBox1->SelectedIndex<=0)
+					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+												"FROM `Телефонна книга` ORDER BY `Фамилия`;";
+				  else
+					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+												"FROM `Телефонна книга` " + 
+												"WHERE (`Группа`=" + Convert::ToString(comboBox1->SelectedIndex) +												
+												") ORDER BY `Фамилия`;";
+				  //Очистим основное поле вывода
+				  this->listBox1->Items->Clear();
+				  //Очистим коды сопоставлений
+				  int i=0;
+				  free(this->codes);
+				  this->codes = (int*)calloc(0, sizeof(int));
+				  //Выполним запрос
+				  appDBCommand->Connection = this->dbConn;				  
+				  Odbc::OdbcDataReader^ appReader;
+				  try{
+					appReader = appDBCommand->ExecuteReader();
+				  } catch(...) {
+					  MessageBox::Show("Ошибка чтения из БД", "Ошибка");
+				  }
+				  while(appReader->Read())
+				  {
+					 String^ tmp = gcnew String(appReader->GetString(1));
+					 if(!appReader->IsDBNull(2)){
+						 tmp+=" " + appReader->GetString(2);
+					 }
+					 if(!appReader->IsDBNull(3)){
+						 tmp+=" " + appReader->GetString(3);
+					 }
+					 if(textBox1->Text!="" && textBox1->Text!="Введите ключевое слово"){
+						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
+						 if((ind>0 && tmp[ind-1]==' ') || (ind==0)){
+							 this->listBox1->Items->Add(tmp);
+							 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+							 this->codes[i-1]=appReader->GetInt32(0);
+						 }
+					 } else {
+						this->listBox1->Items->Add(tmp);
+						this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+						this->codes[i-1]=appReader->GetInt32(0);
+					 }
+					 delete tmp;
+				  }
+				  appReader->Close();
+				  delete appReader;
+				  delete appDBCommand;
+			  }
+		}
 private: System::Void опрограммеToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 DialogResult = MessageBox::Show(this, "Приложение made УПОРОТОСТЬ ПРОДАКШН", "Информация",
 				 MessageBoxButtons::OK,
@@ -244,11 +349,11 @@ private: System::Void опрограммеToolStripMenuItem_Click(System::Object^  sender,
 private: System::Void выходToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 this->Close();
 		 }
-private: System::Void dataGridView1_CellContentClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
-		 }
+
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 			 form2=gcnew MyForm(this->dbConn, this->listBox1->Items->Count+1);                   
 			 form2->Show();
+			 this->backgroundWorker1->RunWorkerAsync();
 		 }
 private: System::Void textBox1_Enter(System::Object^  sender, System::EventArgs^  e) {
 			 if(textBox1->Text=="Введите ключевое слово")
@@ -266,6 +371,8 @@ private: System::Void openFileDialog1_FileOk(System::Object^  sender, System::Co
 		 }
 private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
 			 openFileDialog1->ShowDialog();
+			 this->Focus();
+			 this->BringToFront();
 			 if(this->dbname==""){
 				 MessageBox::Show("Вы не выбрали базу данных!\n В целях повышения безопастности программа завершает работу",
 								  "Информация");
@@ -326,115 +433,58 @@ private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e)
 			 }
 		 }
 private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-			  if (dbConn->State == Data::ConnectionState::Open)
-			  {
-				  Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
-				  if(comboBox1->SelectedIndex==0)
-					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
-												"FROM `Телефонна книга` ORDER BY `Фамилия`;";
-				  else
-					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
-												"FROM `Телефонна книга` " + 
-												"WHERE (`Группа`=" + Convert::ToString(comboBox1->SelectedIndex) +												
-												") ORDER BY `Фамилия`;";
-				  //Очистим основное поле вывода
-				  this->listBox1->Items->Clear();
-				  //Очистим коды сопоставлений
-				  int i=0;
-				  free(this->codes);
-				  this->codes = (int*)calloc(0, sizeof(int));
-				  //Выполним запрос
-				  appDBCommand->Connection = this->dbConn;
-				  Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
-				  while(appReader->Read())
-				  {
-					 String^ tmp = gcnew String(appReader->GetString(1));
-					 if(!appReader->IsDBNull(2)){
-						 tmp+=" " + appReader->GetString(2);
-					 }
-					 if(!appReader->IsDBNull(3)){
-						 tmp+=" " + appReader->GetString(3);
-					 }
-					 if(textBox1->Text!="" && textBox1->Text!="Введите ключевое слово"){
-						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
-						 if((ind>0 && tmp[ind-1]==' ') || (ind==0)){
-							 this->listBox1->Items->Add(tmp);
-							 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
-							 this->codes[i-1]=appReader->GetInt32(0);
-						 }
-					 } else {
-						this->listBox1->Items->Add(tmp);
-						this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
-						this->codes[i-1]=appReader->GetInt32(0);
-					 }
-					 delete tmp;
-				  }
-				  appReader->Close();
-				  delete appReader;
-				  delete appDBCommand;
-			  }
+			 this->reloadList();
 		 }
 private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 			 if(textBox1->Text=="Введите ключевое слово")
 				 return;
-			 if (dbConn->State == Data::ConnectionState::Open)
-			 {
-				  Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
-				  //Начнем формирование сложного запроса на выборку
-				  //Опишем поля выборки из таблицы
-				  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` FROM `Телефонна книга` ";
-				  //Опишем условие выборки по группам(если нужно)
-				  if(comboBox1->SelectedIndex>0)
-					appDBCommand->CommandText= appDBCommand->CommandText + 
-											   "WHERE (`Группа`=" + Convert::ToString(comboBox1->SelectedIndex) + ")";
-				  //Опишем порядок выборки
-				  appDBCommand->CommandText= appDBCommand->CommandText + " ORDER BY `Фамилия`;";
-				  
-				  Clipboard::SetText(Convert::ToString(appDBCommand->CommandText));
-				  //Очистим основное поле вывода
-				  this->listBox1->Items->Clear();
-				  //Очистим коды сопоставлений
-				  int i=0;
-				  free(this->codes);
-				  this->codes = (int*)calloc(0, sizeof(int));
-				  //Выполним запрос
-				  appDBCommand->Connection = this->dbConn;
-				  Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
-				  while(appReader->Read())
-				  {
-					 String^ tmp = gcnew String(appReader->GetString(1));
-					 if(!appReader->IsDBNull(2)){
-						 tmp+=" " + appReader->GetString(2);
-					 }
-					 if(!appReader->IsDBNull(3)){
-						 tmp+=" " + appReader->GetString(3);
-					 }
-					 if(textBox1->Text!=""){
-						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
-						 if((ind>0 && tmp[ind-1]==' ') || (ind==0)){
-							 this->listBox1->Items->Add(tmp);
-							 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
-							 this->codes[i-1]=appReader->GetInt32(0);
-						 }
-					 } else {
-						this->listBox1->Items->Add(tmp);
-						this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
-						this->codes[i-1]=appReader->GetInt32(0);
-					 }
-					 delete tmp;
-				  }
-				  appReader->Close();
-				  delete appReader;
-				  delete appDBCommand;
-			  }
-	
+			 this->reloadList();
 		}
 private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-			 if(this->listBox1->SelectedIndex==-1)
+			 if(this->listBox1->SelectedIndex<0 || this->listBox1->SelectedIndex == this->oldSelection)
 				 return;
-			 form2=gcnew MyForm(this->codes[listBox1->SelectedIndex], this->dbConn);                   
+			 this->oldSelection = this->listBox1->SelectedIndex;
+			 this->contextMenuStrip1->Show(Windows::Forms::Cursor::Position);
+		 }
+private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) {
+			 //waiting for closing in thread
+			 HANDLE hThread =  CreateThread(NULL, 0, reinterpret_cast <LPTHREAD_START_ROUTINE> (&ThreadFunction), 0, 0, 0);
+			 WaitForSingleObject(hThread, INFINITE);
+		 }
+private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) {
+			 this->reloadList();
+			 this->Focus();
+			 this->BringToFront();
+			 this->Show();
+		 }
+private: System::Void listBox1_DoubleClick(System::Object^  sender, System::EventArgs^  e) {
+			 if(this->listBox1->SelectedIndex<0)
+				 return;
+			 this->oldSelection = -1;
+			 this->contextMenuStrip1->Show(Windows::Forms::Cursor::Position);
+		 }
+private: System::Void просмотретьизменитьКонтактToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 form2 = gcnew MyForm(this->codes[listBox1->SelectedIndex], this->dbConn);      
 			 form2->Show();
+			 this->Hide();
+			 this->backgroundWorker1->RunWorkerAsync();
+		 }
+private: System::Void удалитьКонтактToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if(Convert::ToString(MessageBox::Show("Вы действительно хотите удалить выбранный контакт?", "Удаление контакта",
+				 MessageBoxButtons::YesNo, MessageBoxIcon::Question)) == "Yes")
+				 if (this->dbConn->State == Data::ConnectionState::Open)
+				 {
+					Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+					appDBCommand->Connection = this->dbConn;
+					appDBCommand->CommandText = "DELETE FROM `Телефонна книга` WHERE `Код`= "+
+												 this->codes[listBox1->SelectedIndex]+";";
+					appDBCommand->ExecuteNonQuery();
+					appDBCommand->CommandText = "DELETE FROM `Номера` WHERE `Код`= "+
+												 this->codes[listBox1->SelectedIndex]+";";
+					appDBCommand->ExecuteNonQuery();
+					delete appDBCommand;
+					this->reloadList();
+				 }
 		 }
 };
 }
-
