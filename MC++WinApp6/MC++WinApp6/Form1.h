@@ -7,6 +7,8 @@ using namespace System::Collections;
 using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
+using namespace System::IO;
+using namespace System::Text;
 
 static DWORD WINAPI  ThreadFunction(LPVOID ptr) 
 {
@@ -52,6 +54,8 @@ namespace MCWinApp6 {
 	private: System::Windows::Forms::ToolStripMenuItem^  просмотретьизменитьКонтактToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  удалитьКонтактToolStripMenuItem;
 	public:  Odbc::OdbcConnection^ dbConn; //Активное соединения с БД
+	private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
+	public: 
 	private: int oldSelection;
 
 	protected:
@@ -86,6 +90,7 @@ namespace MCWinApp6 {
 			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
 			this->просмотретьизменитьКонтактToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->удалитьКонтактToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->panel1->SuspendLayout();
 			this->contextMenuStrip1->SuspendLayout();
 			this->SuspendLayout();
@@ -192,6 +197,7 @@ namespace MCWinApp6 {
 			this->button2->TabIndex = 4;
 			this->button2->Text = L"Экспорт контактов";
 			this->button2->UseVisualStyleBackColor = false;
+			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
 			// 
 			// button1
 			// 
@@ -261,6 +267,13 @@ namespace MCWinApp6 {
 			this->удалитьКонтактToolStripMenuItem->Size = System::Drawing::Size(232, 22);
 			this->удалитьКонтактToolStripMenuItem->Text = L"Удалить контакт";
 			this->удалитьКонтактToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::удалитьКонтактToolStripMenuItem_Click);
+			// 
+			// saveFileDialog1
+			// 
+			this->saveFileDialog1->FileName = L"контакты";
+			this->saveFileDialog1->Filter = L"CSV (разделители - запятые) *.csv | *.csv";
+			this->saveFileDialog1->RestoreDirectory = true;
+			this->saveFileDialog1->Title = L"Выберите место назначения сохраняемого списка контактов";
 			// 
 			// Form1
 			// 
@@ -485,6 +498,60 @@ private: System::Void удалитьКонтактToolStripMenuItem_Click(System::Object^  sen
 					delete appDBCommand;
 					this->reloadList();
 				 }
+		 }
+private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
+			 this->saveFileDialog1->ShowDialog();
+			 String^ output=gcnew String("");
+			 String^ path = gcnew String(this->saveFileDialog1->FileName);
+			 if(path == ""){
+				 delete path;
+				 return;
+			 }
+			 StreamWriter^ csvWrite = gcnew StreamWriter(path, false, Encoding::GetEncoding(1251));
+			 for(int i=0; i<listBox1->Items->Count; ++i){
+				 Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+				 appDBCommand->Connection = this->dbConn;
+				 appDBCommand->CommandText= "SELECT `Телефонна книга`.`Фамилия`, `Телефонна книга`.`Имя`, " + 
+												"`Телефонна книга`.`Отчество`, " + 
+												"`Номера`.`Номер телефона`, `Номера`.`Email`" +
+												"FROM `Телефонна книга` LEFT JOIN `Номера` ON `Телефонна книга`.`Код`=`Номера`.`Код`" +
+												"WHERE `Телефонна книга`.`Код`=" + this->codes[i] + ";";
+				Odbc::OdbcDataReader^ appReader;
+				try{
+					appReader = appDBCommand->ExecuteReader();
+				} catch(...) {
+					Display("Невозможно произвести считывание из БД");
+				}
+				while(appReader->Read())
+				{
+					output+= appReader->GetString(0)+";";
+					if(!appReader->IsDBNull(1)){
+						output+= appReader->GetString(1)+";";
+					} else {
+						output+="[---];";
+					}
+					if(!appReader->IsDBNull(2)){
+						output+= appReader->GetString(2)+";";
+					} else {
+						output+="[---];";
+					}
+					output+= appReader->GetString(3)+";";
+					if(!appReader->IsDBNull(4)){
+						output+= appReader->GetString(4)+";";
+					} else {
+						output+="[---];";
+					}
+				}
+				delete appDBCommand;
+				delete appReader;
+				csvWrite->WriteLine(output);
+				csvWrite->Flush();
+				output="";
+			 }
+			 csvWrite->Close();
+			 delete output;
+			 delete csvWrite;
+			 MessageBox::Show("Контакты успешно экспортированы!", "Информация");
 		 }
 };
 }
