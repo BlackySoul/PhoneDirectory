@@ -1,15 +1,25 @@
 #pragma once
 #include "MyForm.h"
 
+using namespace System;
+using namespace System::ComponentModel;
+using namespace System::Collections;
+using namespace System::Windows::Forms;
+using namespace System::Data;
+using namespace System::Drawing;
+using namespace System::IO;
+using namespace System::Text;
+
+static DWORD WINAPI  ThreadFunction(LPVOID ptr) 
+{
+	while(open){
+		Sleep(PAUSE);
+	}
+	ExitThread(0);
+	return 0;
+}
+
 namespace MCWinApp6 {
-
-	using namespace System;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
-	using namespace System::Data;
-	using namespace System::Drawing;
-
 	/// <summary>
 	/// Summary for Form1
 	/// </summary>
@@ -18,127 +28,71 @@ namespace MCWinApp6 {
 	public:
 		Form1(void)
 		{
+			oldSelection=-1;
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
+			this->dbname=gcnew String("");
+			codes = (int*)calloc(0, sizeof(int));
 		}
+	
+	private:MyForm^ form2;
+	private: System::Windows::Forms::TextBox^  textBox1;
+	private: System::Windows::Forms::ComboBox^  comboBox1;
+	private: System::Windows::Forms::Panel^  panel1;
+	private: System::Windows::Forms::Button^  button1;
+	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::Button^  button3;
+	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+	private: System::ComponentModel::IContainer^  components;
+
+	private: System::Windows::Forms::ListBox^  listBox1;
+	private: System::Windows::Forms::MenuStrip^  menuStrip1; 
+	private: String^ dbname; //Путь к базе данных
+	private: Odbc::OdbcConnectionStringBuilder^ ConnString; //Строка формулировки соединения с БД
+	private: int *codes; //Массив сопоставлений кодов в listBox1(ключ) и кодов в БД(значение)
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+	private: System::Windows::Forms::ContextMenuStrip^  contextMenuStrip1;
+	private: System::Windows::Forms::ToolStripMenuItem^  просмотретьизменитьКонтактToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  удалитьКонтактToolStripMenuItem;
+	public:  Odbc::OdbcConnection^ dbConn; //Активное соединения с БД
+	private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
+	public: 
+	private: int oldSelection;
 
 	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
 		~Form1()
 		{
 			if (components)
 			{
 				delete components;
 			}
+			delete dbname;
+			dbConn->Close();
+			delete dbConn;
+			delete ConnString;
+			delete[] codes;
 		}
-		private:MyForm^ form2;
-
-
-	protected: 
-
-
-
-
-	private: System::Windows::Forms::TextBox^  textBox1;
-
-	private: System::Windows::Forms::ComboBox^  comboBox1;
-	private: System::Windows::Forms::Panel^  panel1;
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^  файлToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  создатьToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  открытьToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator;
-	private: System::Windows::Forms::ToolStripMenuItem^  сохранитьToolStripMenuItem;
-
-	private: System::Windows::Forms::ToolStripSeparator^  toolStripSeparator1;
-
-
-
-	private: System::Windows::Forms::ToolStripMenuItem^  выходToolStripMenuItem;
-
-
-
-
-
-
-
-
-
-	private: System::Windows::Forms::ToolStripMenuItem^  сервисToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  настройкиToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  параметрыToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  справкаToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  опрограммеToolStripMenuItem;
-	private: System::Windows::Forms::Button^  button1;
-	private: System::Windows::Forms::Button^  button2;
-	private: System::Windows::Forms::DataGridView^  dataGridView1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column2;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column3;
-
-
-
-
-
-
-
-
-
-
-	private: 
-
-
-
-
-
-	protected: 
-
-
-
-
-	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Form1::typeid));
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->listBox1 = (gcnew System::Windows::Forms::ListBox());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
-			this->файлToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->создатьToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->открытьToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->toolStripSeparator = (gcnew System::Windows::Forms::ToolStripSeparator());
-			this->сохранитьToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->toolStripSeparator1 = (gcnew System::Windows::Forms::ToolStripSeparator());
-			this->выходToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->сервисToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->настройкиToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->параметрыToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->справкаToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->опрограммеToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
-			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->contextMenuStrip1 = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->просмотретьизменитьКонтактToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->удалитьКонтактToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->panel1->SuspendLayout();
-			this->menuStrip1->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->BeginInit();
+			this->contextMenuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -156,28 +110,31 @@ namespace MCWinApp6 {
 			this->textBox1->TabIndex = 7;
 			this->textBox1->Text = L"Введите ключевое слово";
 			this->textBox1->TextChanged += gcnew System::EventHandler(this, &Form1::textBox1_TextChanged);
+			this->textBox1->Enter += gcnew System::EventHandler(this, &Form1::textBox1_Enter);
+			this->textBox1->Leave += gcnew System::EventHandler(this, &Form1::textBox1_Leave);
 			// 
 			// comboBox1
 			// 
 			this->comboBox1->BackColor = System::Drawing::SystemColors::HighlightText;
-			this->comboBox1->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+			this->comboBox1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->comboBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(204)));
 			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"Семья", L"Друзья", L"Коллеги"});
 			this->comboBox1->Location = System::Drawing::Point(446, 172);
 			this->comboBox1->Margin = System::Windows::Forms::Padding(0);
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(155, 24);
 			this->comboBox1->TabIndex = 2;
 			this->comboBox1->Text = L"Выберите из списка";
+			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::comboBox1_SelectedIndexChanged);
 			// 
 			// panel1
 			// 
 			this->panel1->BackColor = System::Drawing::Color::Lavender;
 			this->panel1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"panel1.BackgroundImage")));
 			this->panel1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Zoom;
-			this->panel1->Controls->Add(this->dataGridView1);
+			this->panel1->Controls->Add(this->listBox1);
+			this->panel1->Controls->Add(this->button3);
 			this->panel1->Controls->Add(this->button2);
 			this->panel1->Controls->Add(this->textBox1);
 			this->panel1->Controls->Add(this->button1);
@@ -186,6 +143,41 @@ namespace MCWinApp6 {
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(640, 530);
 			this->panel1->TabIndex = 3;
+			// 
+			// listBox1
+			// 
+			this->listBox1->BackColor = System::Drawing::Color::White;
+			this->listBox1->BorderStyle = System::Windows::Forms::BorderStyle::None;
+			this->listBox1->Font = (gcnew System::Drawing::Font(L"Calibri", 12.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+				static_cast<System::Byte>(204)));
+			this->listBox1->ForeColor = System::Drawing::Color::Black;
+			this->listBox1->FormattingEnabled = true;
+			this->listBox1->HorizontalScrollbar = true;
+			this->listBox1->ItemHeight = 21;
+			this->listBox1->Location = System::Drawing::Point(17, 16);
+			this->listBox1->Name = L"listBox1";
+			this->listBox1->Size = System::Drawing::Size(354, 504);
+			this->listBox1->Sorted = true;
+			this->listBox1->TabIndex = 9;
+			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
+			this->listBox1->DoubleClick += gcnew System::EventHandler(this, &Form1::listBox1_DoubleClick);
+			// 
+			// button3
+			// 
+			this->button3->BackColor = System::Drawing::Color::Transparent;
+			this->button3->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"button3.BackgroundImage")));
+			this->button3->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Zoom;
+			this->button3->FlatAppearance->BorderSize = 0;
+			this->button3->FlatAppearance->MouseDownBackColor = System::Drawing::Color::Transparent;
+			this->button3->FlatAppearance->MouseOverBackColor = System::Drawing::Color::Transparent;
+			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button3->ForeColor = System::Drawing::Color::Transparent;
+			this->button3->Location = System::Drawing::Point(610, 3);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(27, 25);
+			this->button3->TabIndex = 8;
+			this->button3->UseVisualStyleBackColor = false;
+			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
 			// 
 			// button2
 			// 
@@ -205,6 +197,7 @@ namespace MCWinApp6 {
 			this->button2->TabIndex = 4;
 			this->button2->Text = L"Экспорт контактов";
 			this->button2->UseVisualStyleBackColor = false;
+			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
 			// 
 			// button1
 			// 
@@ -227,13 +220,19 @@ namespace MCWinApp6 {
 			this->button1->UseVisualStyleBackColor = false;
 			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 			// 
+			// openFileDialog1
+			// 
+			this->openFileDialog1->Filter = L"Файл базы данных MicrosoftAccess(*.mdb)|*.mdb";
+			this->openFileDialog1->RestoreDirectory = true;
+			this->openFileDialog1->SupportMultiDottedExtensions = true;
+			this->openFileDialog1->Title = L"Выберите БД";
+			this->openFileDialog1->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openFileDialog1_FileOk);
+			// 
 			// menuStrip1
 			// 
 			this->menuStrip1->BackColor = System::Drawing::Color::LightSteelBlue;
 			this->menuStrip1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"menuStrip1.BackgroundImage")));
 			this->menuStrip1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {this->файлToolStripMenuItem, 
-				this->сервисToolStripMenuItem, this->справкаToolStripMenuItem});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Margin = System::Windows::Forms::Padding(10, 0, 0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -243,127 +242,38 @@ namespace MCWinApp6 {
 			this->menuStrip1->TabIndex = 4;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
-			// файлToolStripMenuItem
+			// backgroundWorker1
 			// 
-			this->файлToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {this->создатьToolStripMenuItem, 
-				this->открытьToolStripMenuItem, this->toolStripSeparator, this->сохранитьToolStripMenuItem, this->toolStripSeparator1, this->выходToolStripMenuItem});
-			this->файлToolStripMenuItem->Name = L"файлToolStripMenuItem";
-			this->файлToolStripMenuItem->Size = System::Drawing::Size(48, 20);
-			this->файлToolStripMenuItem->Text = L"&Файл";
+			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Form1::backgroundWorker1_DoWork);
+			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Form1::backgroundWorker1_RunWorkerCompleted);
 			// 
-			// создатьToolStripMenuItem
+			// contextMenuStrip1
 			// 
-			this->создатьToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"создатьToolStripMenuItem.Image")));
-			this->создатьToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->создатьToolStripMenuItem->Name = L"создатьToolStripMenuItem";
-			this->создатьToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
-			this->создатьToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->создатьToolStripMenuItem->Text = L"&Создать";
+			this->contextMenuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->просмотретьизменитьКонтактToolStripMenuItem, 
+				this->удалитьКонтактToolStripMenuItem});
+			this->contextMenuStrip1->Name = L"contextMenuStrip1";
+			this->contextMenuStrip1->Size = System::Drawing::Size(233, 48);
 			// 
-			// открытьToolStripMenuItem
+			// просмотретьизменитьКонтактToolStripMenuItem
 			// 
-			this->открытьToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"открытьToolStripMenuItem.Image")));
-			this->открытьToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->открытьToolStripMenuItem->Name = L"открытьToolStripMenuItem";
-			this->открытьToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
-			this->открытьToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->открытьToolStripMenuItem->Text = L"&Открыть";
+			this->просмотретьизменитьКонтактToolStripMenuItem->Name = L"просмотретьизменитьКонтактToolStripMenuItem";
+			this->просмотретьизменитьКонтактToolStripMenuItem->Size = System::Drawing::Size(232, 22);
+			this->просмотретьизменитьКонтактToolStripMenuItem->Text = L"Просмотреть/изменить контакт";
+			this->просмотретьизменитьКонтактToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::просмотретьизменитьКонтактToolStripMenuItem_Click);
 			// 
-			// toolStripSeparator
+			// удалитьКонтактToolStripMenuItem
 			// 
-			this->toolStripSeparator->Name = L"toolStripSeparator";
-			this->toolStripSeparator->Size = System::Drawing::Size(169, 6);
+			this->удалитьКонтактToolStripMenuItem->Name = L"удалитьКонтактToolStripMenuItem";
+			this->удалитьКонтактToolStripMenuItem->Size = System::Drawing::Size(232, 22);
+			this->удалитьКонтактToolStripMenuItem->Text = L"Удалить контакт";
+			this->удалитьКонтактToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::удалитьКонтактToolStripMenuItem_Click);
 			// 
-			// сохранитьToolStripMenuItem
+			// saveFileDialog1
 			// 
-			this->сохранитьToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"сохранитьToolStripMenuItem.Image")));
-			this->сохранитьToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Magenta;
-			this->сохранитьToolStripMenuItem->Name = L"сохранитьToolStripMenuItem";
-			this->сохранитьToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::S));
-			this->сохранитьToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->сохранитьToolStripMenuItem->Text = L"&Сохранить";
-			// 
-			// toolStripSeparator1
-			// 
-			this->toolStripSeparator1->Name = L"toolStripSeparator1";
-			this->toolStripSeparator1->Size = System::Drawing::Size(169, 6);
-			// 
-			// выходToolStripMenuItem
-			// 
-			this->выходToolStripMenuItem->Name = L"выходToolStripMenuItem";
-			this->выходToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Alt | System::Windows::Forms::Keys::X));
-			this->выходToolStripMenuItem->Size = System::Drawing::Size(172, 22);
-			this->выходToolStripMenuItem->Text = L"Вы&ход";
-			this->выходToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::выходToolStripMenuItem_Click);
-			// 
-			// сервисToolStripMenuItem
-			// 
-			this->сервисToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {this->настройкиToolStripMenuItem, 
-				this->параметрыToolStripMenuItem});
-			this->сервисToolStripMenuItem->Name = L"сервисToolStripMenuItem";
-			this->сервисToolStripMenuItem->Size = System::Drawing::Size(59, 20);
-			this->сервисToolStripMenuItem->Text = L"&Сервис";
-			// 
-			// настройкиToolStripMenuItem
-			// 
-			this->настройкиToolStripMenuItem->Name = L"настройкиToolStripMenuItem";
-			this->настройкиToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->настройкиToolStripMenuItem->Text = L"&Настройки";
-			// 
-			// параметрыToolStripMenuItem
-			// 
-			this->параметрыToolStripMenuItem->Name = L"параметрыToolStripMenuItem";
-			this->параметрыToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-			this->параметрыToolStripMenuItem->Text = L"&Параметры";
-			// 
-			// справкаToolStripMenuItem
-			// 
-			this->справкаToolStripMenuItem->BackColor = System::Drawing::Color::Transparent;
-			this->справкаToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->опрограммеToolStripMenuItem});
-			this->справкаToolStripMenuItem->ImageTransparentColor = System::Drawing::Color::Transparent;
-			this->справкаToolStripMenuItem->Name = L"справкаToolStripMenuItem";
-			this->справкаToolStripMenuItem->Size = System::Drawing::Size(65, 20);
-			this->справкаToolStripMenuItem->Text = L"Спра&вка";
-			// 
-			// опрограммеToolStripMenuItem
-			// 
-			this->опрограммеToolStripMenuItem->Name = L"опрограммеToolStripMenuItem";
-			this->опрограммеToolStripMenuItem->Size = System::Drawing::Size(158, 22);
-			this->опрограммеToolStripMenuItem->Text = L"&О программе...";
-			this->опрограммеToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::опрограммеToolStripMenuItem_Click);
-			// 
-			// dataGridView1
-			// 
-			this->dataGridView1->AllowUserToAddRows = false;
-			this->dataGridView1->AllowUserToDeleteRows = false;
-			this->dataGridView1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-			this->dataGridView1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView1->ColumnHeadersVisible = false;
-			this->dataGridView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {this->Column1, 
-				this->Column2, this->Column3});
-			this->dataGridView1->Location = System::Drawing::Point(15, 16);
-			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->ReadOnly = true;
-			this->dataGridView1->Size = System::Drawing::Size(354, 498);
-			this->dataGridView1->TabIndex = 5;
-			// 
-			// Column1
-			// 
-			this->Column1->HeaderText = L"Column1";
-			this->Column1->Name = L"Column1";
-			this->Column1->ReadOnly = true;
-			// 
-			// Column2
-			// 
-			this->Column2->HeaderText = L"Column2";
-			this->Column2->Name = L"Column2";
-			this->Column2->ReadOnly = true;
-			// 
-			// Column3
-			// 
-			this->Column3->HeaderText = L"Column3";
-			this->Column3->Name = L"Column3";
-			this->Column3->ReadOnly = true;
+			this->saveFileDialog1->FileName = L"контакты";
+			this->saveFileDialog1->Filter = L"CSV (разделители - запятые) *.csv | *.csv";
+			this->saveFileDialog1->RestoreDirectory = true;
+			this->saveFileDialog1->Title = L"Выберите место назначения сохраняемого списка контактов";
 			// 
 			// Form1
 			// 
@@ -375,35 +285,75 @@ namespace MCWinApp6 {
 			this->Controls->Add(this->panel1);
 			this->Controls->Add(this->menuStrip1);
 			this->DoubleBuffered = true;
-			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 			this->MainMenuStrip = this->menuStrip1;
 			this->MaximizeBox = false;
 			this->Name = L"Form1";
 			this->Text = L"Телефонная книга";
+			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
-			this->menuStrip1->ResumeLayout(false);
-			this->menuStrip1->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->dataGridView1))->EndInit();
+			this->contextMenuStrip1->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-				 
-				 /*if (textBox1->Text == "Введите ключевое слово")
-					{
-						pictureBox1->Visible=true;
-						//textBox1->CursorChanged
-					 }
-				 else
-				 {
-					 pictureBox1->Visible=false;
-				 }*/
 
-		
-			 }
+public: void reloadList(){
+			  if (this->dbConn->State == Data::ConnectionState::Open)
+			  {
+				  Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+				  if(this->comboBox1->SelectedIndex<=0)
+					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+												"FROM `Телефонна книга` ORDER BY `Фамилия`;";
+				  else
+					  appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+												"FROM `Телефонна книга` " + 
+												"WHERE (`Группа`=" + Convert::ToString(comboBox1->SelectedIndex) +												
+												") ORDER BY `Фамилия`;";
+				  //Очистим основное поле вывода
+				  this->listBox1->Items->Clear();
+				  //Очистим коды сопоставлений
+				  int i=0;
+				  free(this->codes);
+				  this->codes = (int*)calloc(0, sizeof(int));
+				  //Выполним запрос
+				  appDBCommand->Connection = this->dbConn;				  
+				  Odbc::OdbcDataReader^ appReader;
+				  try{
+					appReader = appDBCommand->ExecuteReader();
+				  } catch(...) {
+					  MessageBox::Show("Ошибка чтения из БД", "Ошибка");
+				  }
+				  while(appReader->Read())
+				  {
+					 String^ tmp = gcnew String(appReader->GetString(1));
+					 if(!appReader->IsDBNull(2)){
+						 tmp+=" " + appReader->GetString(2);
+					 }
+					 if(!appReader->IsDBNull(3)){
+						 tmp+=" " + appReader->GetString(3);
+					 }
+					 if(textBox1->Text!="" && textBox1->Text!="Введите ключевое слово"){
+						 int ind = tmp->IndexOf(textBox1->Text, StringComparison::OrdinalIgnoreCase);
+						 if((ind>0 && tmp[ind-1]==' ') || (ind==0)){
+							 this->listBox1->Items->Add(tmp);
+							 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+							 this->codes[i-1]=appReader->GetInt32(0);
+						 }
+					 } else {
+						this->listBox1->Items->Add(tmp);
+						this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+						this->codes[i-1]=appReader->GetInt32(0);
+					 }
+					 delete tmp;
+				  }
+				  appReader->Close();
+				  delete appReader;
+				  delete appDBCommand;
+			  }
+		}
 private: System::Void опрограммеToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 DialogResult = MessageBox::Show(this, "Приложение made УПОРОТОСТЬ ПРОДАКШН", "Информация",
 				 MessageBoxButtons::OK,
@@ -412,14 +362,196 @@ private: System::Void опрограммеToolStripMenuItem_Click(System::Object^  sender,
 private: System::Void выходToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			 this->Close();
 		 }
-private: System::Void dataGridView1_CellContentClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
-		 }
-private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-			 form2=gcnew MyForm();  // gcnew – выделение памяти, 
-                                              //Form2() - конструктор
-				 form2->Show();
 
+private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+			 form2=gcnew MyForm(this->dbConn, this->listBox1->Items->Count+1);                   
+			 form2->Show();
+			 this->backgroundWorker1->RunWorkerAsync();
+		 }
+private: System::Void textBox1_Enter(System::Object^  sender, System::EventArgs^  e) {
+			 if(textBox1->Text=="Введите ключевое слово")
+				 textBox1->Text="";
+		 }
+private: System::Void textBox1_Leave(System::Object^  sender, System::EventArgs^  e) {
+			 if(textBox1->Text=="")
+				 textBox1->Text="Введите ключевое слово";
+		 }
+private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
+			 exit(0);
+		 }
+private: System::Void openFileDialog1_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) {
+			 this->dbname=openFileDialog1->FileName;
+		 }
+private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
+			 openFileDialog1->ShowDialog();
+			 this->Focus();
+			 this->BringToFront();
+			 if(this->dbname==""){
+				 MessageBox::Show("Вы не выбрали базу данных!\n В целях повышения безопастности программа завершает работу",
+								  "Информация");
+				 exit(1);
+			 }
+			 ConnString = gcnew Odbc::OdbcConnectionStringBuilder();
+			 ConnString->Driver = "Microsoft Access Driver (*.mdb)";
+			 ConnString->Add("Dbq",this->dbname);
+			 this->dbConn = gcnew Odbc::OdbcConnection();
+			 dbConn->ConnectionString=ConnString->ConnectionString;
+			 try
+			 {
+				 this->dbConn->Open();
+			 }
+			 catch(...)
+			 {
+				 MessageBox::Show("Неверная строка соединения!\n" + 
+								  Convert::ToString(dbConn->ConnectionString) +"\n",
+								  "Ошибка",MessageBoxButtons::OK);
+				 exit(1);
+			 }
+			 if (this->dbConn->State == Data::ConnectionState::Open)
+			 {
+				 this->comboBox1->Items->Add("[Любая группа]");
+				 Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand("SELECT `Группа` FROM `Группы` ORDER BY `Код`");
+				 appDBCommand->Connection = this->dbConn;
+				 Odbc::OdbcDataReader^ appReader = appDBCommand->ExecuteReader();
+				 while(appReader->Read())
+				 {
+					 this->comboBox1->Items->Add(appReader->GetString(0));
+				 }
+				 appDBCommand->CommandText="SELECT `Код`,`Фамилия`, `Имя`, `Отчество` " + 
+										   "FROM `Телефонна книга` ORDER BY `Фамилия`;";
+				 appReader->Close();
+				 appReader->~OdbcDataReader();
+				 delete appReader;
+				 appReader = appDBCommand->ExecuteReader();
+				 int i=0;
+				 while(appReader->Read())
+				 {
+					 this->codes = (int*)realloc(this->codes, sizeof(int)*(++i));
+					 this->codes[i-1]=appReader->GetInt32(0);
+					 String^ tmp = gcnew String(appReader->GetString(1));
+					 if(!appReader->IsDBNull(2)){
+						 tmp+=" " + appReader->GetString(2);
+					 }
+					 if(!appReader->IsDBNull(3)){
+						 tmp+=" " + appReader->GetString(3);
+					 }
+					 this->listBox1->Items->Add(tmp);
+					 delete tmp;
+				 }
+				 appReader->Close();
+				 appReader->~OdbcDataReader();
+				 appDBCommand->~OdbcCommand();
+				 delete appReader;
+				 delete appDBCommand;
+			 }
+		 }
+private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+			 this->reloadList();
+		 }
+private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if(textBox1->Text=="Введите ключевое слово")
+				 return;
+			 this->reloadList();
+		}
+private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+			 if(this->listBox1->SelectedIndex<0 || this->listBox1->SelectedIndex == this->oldSelection)
+				 return;
+			 this->oldSelection = this->listBox1->SelectedIndex;
+			 this->contextMenuStrip1->Show(Windows::Forms::Cursor::Position);
+		 }
+private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) {
+			 //waiting for closing in thread
+			 HANDLE hThread =  CreateThread(NULL, 0, reinterpret_cast <LPTHREAD_START_ROUTINE> (&ThreadFunction), 0, 0, 0);
+			 WaitForSingleObject(hThread, INFINITE);
+		 }
+private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) {
+			 this->reloadList();
+			 this->Focus();
+			 this->BringToFront();
+			 this->Show();
+		 }
+private: System::Void listBox1_DoubleClick(System::Object^  sender, System::EventArgs^  e) {
+			 if(this->listBox1->SelectedIndex<0)
+				 return;
+			 this->oldSelection = -1;
+			 this->contextMenuStrip1->Show(Windows::Forms::Cursor::Position);
+		 }
+private: System::Void просмотретьизменитьКонтактToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 form2 = gcnew MyForm(this->codes[listBox1->SelectedIndex], this->dbConn);      
+			 form2->Show();
+			 this->Hide();
+			 this->backgroundWorker1->RunWorkerAsync();
+		 }
+private: System::Void удалитьКонтактToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			 if(Convert::ToString(MessageBox::Show("Вы действительно хотите удалить выбранный контакт?", "Удаление контакта",
+				 MessageBoxButtons::YesNo, MessageBoxIcon::Question)) == "Yes")
+				 if (this->dbConn->State == Data::ConnectionState::Open)
+				 {
+					Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+					appDBCommand->Connection = this->dbConn;
+					appDBCommand->CommandText = "DELETE FROM `Телефонна книга` WHERE `Код`= "+
+												 this->codes[listBox1->SelectedIndex]+";";
+					appDBCommand->ExecuteNonQuery();
+					appDBCommand->CommandText = "DELETE FROM `Номера` WHERE `Код`= "+
+												 this->codes[listBox1->SelectedIndex]+";";
+					appDBCommand->ExecuteNonQuery();
+					delete appDBCommand;
+					this->reloadList();
+				 }
+		 }
+private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
+			 this->saveFileDialog1->ShowDialog();
+			 String^ output=gcnew String("");
+			 String^ path = gcnew String(this->saveFileDialog1->FileName);
+			 if(path == ""){
+				 delete path;
+				 return;
+			 }
+			 StreamWriter^ csvWrite = gcnew StreamWriter(path, false, Encoding::GetEncoding(1251));
+			 for(int i=0; i<listBox1->Items->Count; ++i){
+				 Odbc::OdbcCommand^ appDBCommand=gcnew Odbc::OdbcCommand();
+				 appDBCommand->Connection = this->dbConn;
+				 appDBCommand->CommandText= "SELECT `Телефонна книга`.`Фамилия`, `Телефонна книга`.`Имя`, " + 
+												"`Телефонна книга`.`Отчество`, " + 
+												"`Номера`.`Номер телефона`, `Номера`.`Email`" +
+												"FROM `Телефонна книга` LEFT JOIN `Номера` ON `Телефонна книга`.`Код`=`Номера`.`Код`" +
+												"WHERE `Телефонна книга`.`Код`=" + this->codes[i] + ";";
+				Odbc::OdbcDataReader^ appReader;
+				try{
+					appReader = appDBCommand->ExecuteReader();
+				} catch(...) {
+					Display("Невозможно произвести считывание из БД");
+				}
+				while(appReader->Read())
+				{
+					output+= appReader->GetString(0)+";";
+					if(!appReader->IsDBNull(1)){
+						output+= appReader->GetString(1)+";";
+					} else {
+						output+="[---];";
+					}
+					if(!appReader->IsDBNull(2)){
+						output+= appReader->GetString(2)+";";
+					} else {
+						output+="[---];";
+					}
+					output+= appReader->GetString(3)+";";
+					if(!appReader->IsDBNull(4)){
+						output+= appReader->GetString(4)+";";
+					} else {
+						output+="[---];";
+					}
+				}
+				delete appDBCommand;
+				delete appReader;
+				csvWrite->WriteLine(output);
+				csvWrite->Flush();
+				output="";
+			 }
+			 csvWrite->Close();
+			 delete output;
+			 delete csvWrite;
+			 MessageBox::Show("Контакты успешно экспортированы!", "Информация");
 		 }
 };
 }
-

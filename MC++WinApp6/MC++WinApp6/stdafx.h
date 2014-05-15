@@ -2,5 +2,9 @@
 // or project specific include files that are used frequently, but
 // are changed infrequently
 #pragma once
+#include <cstdlib>
+#include <Windows.h>
 
-// TODO: reference additional headers your program requires here
+#define Display(a) MessageBox::Show(System::Convert::ToString(a))
+
+#define PAUSE 100
